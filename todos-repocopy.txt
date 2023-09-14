@@ -1,0 +1,27 @@
+# Todos
+
+
+- [ ] Domain Driven Design
+- [ ] Add a kafka message system
+- [ ] Add a rabbitMQ message system
+- [ ] Add frontend with react/vue
+- [ ] Authentication/Authorization
+- [ ] Add NoSql db and make searches only from there (CQRS?)
+- [x] Add docker-compose files
+- [ ] Add DockerFiles and push to docker hub
+- [ ] GitLab CICD
+- [ ] Make maven push on gitlab and make images etc
+- [ ] Add Sonar
+- [ ] Make a kubernetes cluster
+- [ ] Add circuit breakers
+- [x] Add flyway
+- [ ] Microservices contract testing https://openliberty.io/guides/contract-testing.html
+- [x] Add lombok
+- [x] Add test containers
+- [ ] Add mapstruct
+
+
+## Nice to have
+- [ ] elastic stack
+- [ ] aws
+
