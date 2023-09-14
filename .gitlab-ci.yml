@@ -1,0 +1,23 @@
+stages:
+  - build
+
+services:
+  - postgres: 15.3
+    alias: postgresql
+  - docker: dind
+
+variables:
+  DOCKER_HOST: tcp://docker:2375
+  DOCKER_DRIVER: overlay2
+
+build:
+  stage: build
+  image: maven:3.9.1
+  script:
+    - "mvn clean install -DskipTests -B"
+
+test:
+  stage: build
+  image: maven:3.9.1
+  script:
+    - "mvn test"

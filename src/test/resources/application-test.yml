@@ -1,0 +1,9 @@
+spring:
+  hibernate:
+    ddl-auto: update
+  #  show-sql: 'true'
+  ##
+  datasource:
+    username: ${DB_USERNAME}
+    password: ${DB_PASSWORD}
+    url: ${DB_URL}

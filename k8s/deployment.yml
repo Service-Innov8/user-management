@@ -1,0 +1,103 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: user-management
+spec:
+  selector:
+    app: user-management
+    tier: backend
+  ports:
+    - protocol: 'TCP'
+      port: 8080
+      targetPort: 8081
+  type: LoadBalancer
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: university-deployment
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: user-management
+      tier: backend
+  template:
+    metadata:
+      labels:
+        app: user-management
+        tier: backend
+    spec:
+      containers:
+        - name: user-management
+          image: karagp/user-management:latest
+#          env:
+#            - name: POSTGRES_JDBC_HOST
+#              value: USER_MANAGEMENT_DB_SERVICE_HOST
+---
+
+
+apiVersion: v1
+kind: Service
+metadata:
+  name: user-management-db
+spec:
+  selector:
+    app: user-management
+    tier: db
+  ports:
+    - protocol: 'TCP'
+      port: 5432
+      targetPort: 5432
+  type: ClusterIP
+---
+
+
+
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: user-management-db
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: user-management
+      tier: db
+  template:
+    metadata:
+      labels:
+        app: user-management
+        tier: db
+    spec:
+      containers:
+        - name: um-db
+          image: postgres:15.3
+          env:
+            - name: POSTGRES_USER
+              valueFrom:
+                configMapKeyRef:
+                  name: data-store-env
+                  key: POSTGRES_USER
+            - name: POSTGRES_PASSWORD
+              valueFrom:
+                configMapKeyRef:
+                  name: data-store-env
+                  key: POSTGRES_PASSWORD
+            - name: POSTGRES_DB
+              valueFrom:
+                configMapKeyRef:
+                  name: data-store-env
+                  key: POSTGRES_DB
+#          volumeMounts:
+#            - mountPath: /app/
+#              name: db
+#      volumes:
+#        - name: db
+#          local: {}
+#          livenessProbe:
+#            httpGet:
+#              path: /
+#              port: 8080
+#            periodSeconds: 10
+#            initialDelaySeconds: 5

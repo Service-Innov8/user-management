@@ -1,0 +1,76 @@
+version: '3.8'
+
+services:
+    postgres:
+        image: postgres:15.3
+        restart: always
+        container_name: postgres
+        ports:
+            - "5431:5432"
+        environment:
+            POSTGRES_USER: dimpetr
+            POSTGRES_PASSWORD: myuser
+            POSTGRES_DB: user_management
+        volumes:
+           - user-data:/var/lib/postgresql/data
+
+    pgadmin:
+        image: dpage/pgadmin4:7.1
+        restart: always
+        container_name: pgadmin
+        ports:
+            - "5051:80"
+        depends_on:
+            - postgres
+        environment:
+            PGADMIN_DEFAULT_EMAIL: dimpetr@gmail.com
+            PGADMIN_DEFAULT_PASSWORD: myuser
+            POSTGRES_DB: user_management
+    sonarqube:
+        image: sonarqube:community
+        hostname: sonarqube
+        container_name: sonarqube
+        depends_on:
+            - sonar-db
+        environment:
+            SONAR_JDBC_URL: jdbc:postgresql://sonar-db:5432/sonar
+            SONAR_JDBC_USERNAME: sonar
+            SONAR_JDBC_PASSWORD: sonar
+        volumes:
+            - sonarqube_data:/opt/sonarqube/data
+            - sonarqube_extensions:/opt/sonarqube/extensions
+            - sonarqube_logs:/opt/sonarqube/logs
+        ports:
+            - "9000:9000"
+
+    sonar-db:
+        image: postgres:13
+        hostname: postgresql
+        container_name: postgresql
+        environment:
+            POSTGRES_USER: sonar
+            POSTGRES_PASSWORD: sonar
+            POSTGRES_DB: sonar
+        volumes:
+            - postgresql:/var/lib/postgresql
+            - postgresql_data:/var/lib/postgresql/data
+
+#    user-management:
+#        build: we can build image from here
+#        image: user-mngmt:1.0.0
+#        container_name: user-management-app
+#        depends_on:
+#            - postgres
+#        environment:
+#            - POSTGRES_JDBC_HOST=postgres
+#        ports:
+#            - "8081:8081"
+
+volumes:
+    user-data:
+       driver: local
+    sonarqube_data:
+    sonarqube_extensions:
+    sonarqube_logs:
+    postgresql:
+    postgresql_data:
